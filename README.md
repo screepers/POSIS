@@ -3,6 +3,8 @@ Portable Operating System Interface for Screeps
 
 # Current Draft
 
+Live editing [here](https://hackmd.io/GwBhBNgdgJgQwLQEYCcoEBYDMAjAxgnOOIjABwQBmMK4IGIZQA==)
+
 - Needs namespacing
 - Needs entry point (to get constructor registry and root process to start)
 
