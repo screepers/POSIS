@@ -2,7 +2,7 @@ import { PosisBaseProcess } from "./posis";
 
 class ExampleProcess extends PosisBaseProcess {
   run () {
-    let kernel: IPosisKernel = queryPosisInterface<IPosisKernel>("baseKernel");
+    let kernel: IPosisKernel = queryPosisInterface("baseKernel") as IPosisKernel;
     let child = kernel.startProcess(this, "AGS/AnotherProcess", {
       msg: "Hello World!"
     });
@@ -12,7 +12,7 @@ class ExampleProcess extends PosisBaseProcess {
 }
 class AnotherProcess extends PosisBaseProcess {
   run() {
-    let kernel: IPosisKernel = queryPosisInterface<IPosisKernel>("baseKernel");
+    let kernel: IPosisKernel = queryPosisInterface("baseKernel") as IPosisKernel;
     let parent = kernel.getProcessById(this.parentId);
     this.log.info(`TICK! ${Game.time} ${this.memory.msg}`);
   }
