@@ -2,7 +2,8 @@
 	"compilerOptions":{
 		"module": "commonjs",
 		"outDir":"build",
-		"noImplicitAny" : true
+		"noImplicitAny" : true,
+		"target":"ES6"
 	},
 	"files":["examples/ags.example.ts"],
 	"include":["**/*.d.ts"]

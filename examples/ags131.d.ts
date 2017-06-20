@@ -24,5 +24,47 @@ interface SpawnQueueItem {
     };
 }
 
+
+interface ProcessInfo {
+  name: string;
+  args: any[];
+  id: PID;
+  parentPID: PID;
+}
+
+interface IProcess {
+  pinfo: ProcessInfo;
+  mem: any;
+  id: PID;
+  run(): void;
+}
+
+interface ProcessScope {
+  pinfo: ProcessInfo;
+  memory: any;
+  logger: ILogger;
+}
+
+type PID = number;
+
+interface IKernel {
+  process(id: PID): ProcessInfo;
+  spawn(parent: PID, name: string, ...args: string[]): PID;
+  kill(id: PID, signal: string): void;
+  setMemory(id: PID, value: any): void;
+  getWrapedProc(id: PID, cb: (proc: IProcess | IPosisProcess) => void): void;
+  registerProc(name: string, constructor: new () => IPosisProcess): void;
+}
+
+interface ILogger {
+    debug(message: string): void;
+    info(message:  string): void;
+    warn(message:  string): void;
+    error(message: string): void;
+}
+
+declare const kernel: IKernel;
+
+// HACK! 
 declare function registerPosisProcess(imageName: string, constructor: new () => IPosisProcess): boolean;
 declare function queryPosisInterface<TQI extends IPosisExtension>(interfaceId: string): TQI | undefined;
