@@ -1,6 +1,6 @@
 # POSIS
 Portable Operating System Interface for Screeps
- 
+
 # Current Draft
 
 Live editing [here](https://hackmd.io/GwBhBNgdgJgQwLQEYCcoEBYDMAjAxgnOOIjABwQBmMK4IGIZQA==)
@@ -33,10 +33,10 @@ interface IPosisProcess {
 ```typescript=
 interface IPosisLogger {
     // because sometimes you don't want to eval arguments to ignore them
-    debug(message: () => string): void;
-    info(message: () => string): void;
-    warn(message: () => string): void;
-    error(message: () => string): void;
+    debug(message: (() => string) | string): void;
+    info(message:  (() => string) | string): void;
+    warn(message:  (() => string) | string): void;
+    error(message: (() => string) | string): void;
 }
 ```
 
