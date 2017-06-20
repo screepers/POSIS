@@ -9,7 +9,7 @@ Live editing [here](https://hackmd.io/GwBhBNgdgJgQwLQEYCcoEBYDMAjAxgnOOIjABwQBmM
 - Needs entry point (to get constructor registry and root process to start)
 
 - POSIS program registry:
-```typescript=
+```typescript
 declare var global {
     // register this function before require()ing your POSIS program bundles; they can call this at the end of their source file to register themselves
     // name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
@@ -18,7 +18,7 @@ declare var global {
 }
 ```
 
-```typescript=
+```typescript
 interface IPosisProcess {
     memory: any; // private memory
     imageName: string; // image name (maps to constructor)
@@ -30,7 +30,7 @@ interface IPosisProcess {
 }
 ```
 
-```typescript=
+```typescript
 interface IPosisLogger {
     // because sometimes you don't want to eval arguments to ignore them
     debug(message: (() => string) | string): void;
@@ -40,7 +40,7 @@ interface IPosisLogger {
 }
 ```
 
-```typescript=
+```typescript
 interface IPosisKernel {
     startProcess(parent: IProcess, imageName: string, startContext: any): IProcess;
     // killProcess also kills all children of this process
@@ -63,7 +63,7 @@ interface IPosisKernel {
 ```
 
 - Example global/kernel extension interface
-```typescript=
+```typescript
 // this is not a good path cache extension interface.
 interface IPosisPathCacheExtension : IPosisExtension {
     getNextMoveInPath(p: Path, pos: RoomPosition): number;
@@ -78,7 +78,7 @@ if (pathCache) {
 ```
 
 - Example process extension interface
-```typescript=
+```typescript
 interface IPosisProcessSleepExtension : IPosisProcess {
     sleep(ticks = 1);
 }
@@ -93,7 +93,7 @@ if (hasSleepExtension(this)) {
 ```
 
 - Basic example process
-```typescript=
+```typescript
 // ags.example.js
 class ExampleProcess implements IPosisProcess {
     run(){
@@ -130,7 +130,7 @@ require('ags.example.js')
 
 
 - Spawn Extension
-```typescript=
+```typescript
 // Needs review
 interface IPosisSpawnExtension {
     // Queues/Spawns the creep and returns an ID
@@ -142,7 +142,7 @@ interface IPosisSpawnExtension {
 }
 ```
 
-```typescript=
+```typescript
 // An implementation of the above based on my (ags) codebase, feel free to ignore....
 class SpawnExtension implements IPosisSpawnExtension {
     constructor(){
