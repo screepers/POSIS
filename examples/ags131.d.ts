@@ -9,3 +9,20 @@ interface Room {
 }
 
 declare const _: any;
+
+interface SpawnRegister {
+    [s: string]: {
+        room: string,
+        body: string[],
+        memory: any
+    };
+}
+
+interface SpawnQueueItem {
+    memory: {
+        _id: string
+    };
+}
+
+declare function registerPosisProcess(imageName: string, constructor: new () => IPosisProcess): boolean;
+declare function queryPosisInterface<TQI extends IPosisExtension>(interfaceId: string): TQI | undefined;

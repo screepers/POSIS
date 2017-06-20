@@ -7,7 +7,4 @@ declare const global: {
     queryPosisInterface<TQI extends IPosisExtension>(interfaceId: string): TQI | undefined;
 };
 
-declare function registerPosisProcess(imageName: string, constructor: new () => IPosisProcess): boolean;
-declare function queryPosisInterface<TQI extends IPosisExtension>(interfaceId: string): TQI | undefined;
-
 type PosisPID = string | number;

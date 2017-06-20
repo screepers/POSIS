@@ -1,10 +1,5 @@
 // 
 
-interface SpawnQueueItem {
-    memory: {
-        _id: string
-    };
-}
 
 class SpawnExtension implements IPosisExtension, IPosisSpawnExtension {
     private register: SpawnRegister = {};
@@ -48,16 +43,6 @@ export abstract class PosisBaseProcess implements IPosisProcess {
     parentId: PosisPID;
     log: IPosisLogger;
     abstract run(): void;
-}
-
-// An implementation of IPosisSpawnExtension on my (ags) codebase, feel free to ignore....
-
-interface SpawnRegister {
-    [s: string]: {
-        room: string,
-        body: string[],
-        memory: any
-    };
 }
 
 function RandomIDGenerator(): string {
