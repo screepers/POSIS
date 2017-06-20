@@ -1,0 +1,26 @@
+{
+  "name": "posis",
+  "version": "1.0.0",
+  "description": "Portable Operating System Interface for Screeps",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {
+    "screeps-typescript-declarations": "^4.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/screepers/POSIS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/screepers/POSIS/issues"
+  },
+  "homepage": "https://github.com/screepers/POSIS#readme"
+}

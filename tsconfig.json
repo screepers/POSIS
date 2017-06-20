@@ -1,3 +1,9 @@
-{
-	"files":["**/*.d.ts"]
+{	
+	"compilerOptions":{
+		"module": "commonjs",
+		"outDir":"build",
+		"noImplicitAny" : true
+	},
+	"files":["examples/ags.example.ts"],
+	"include":["**/*.d.ts"]
 }
