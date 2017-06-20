@@ -16,8 +16,6 @@ declare var global {
     // if you have several programs that are logically grouped (a "bundle") you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
     registerPosisProcess(imageName: string, constructor: any);
     // For querying extension interfaces (instead of tying ourselves to "levels")
-    // todo: typing magic so we can have more interface signatures - On it (Prime)
-    // assuming: interface IPosisExtension extends IPosisLevel1Kernel { }
     queryPosisInterface<
         TQI extends IPosisExtension
     >(
