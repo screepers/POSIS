@@ -32,7 +32,6 @@ interface IPosisProcess {
     parentId: string; // Parent ID
     log: IPosisLogger; // Logger 
     run(): void; // main function
-    exit(): void; // Exit
 }
 ```
 
@@ -48,15 +47,15 @@ interface IPosisLogger {
 
 ```typescript
 interface IPosisKernel {
-    startProcess(parent: IProcess, imageName: string, startContext: any): IProcess;
+    startProcess(parent: IProcess, imageName: string, startContext: any): IProcess | undefined;
     // killProcess also kills all children of this process
     // note to the wise: probably absorb any calls to this that would wipe out your entire process tree.
-    killProcess(pid: string);
+    killProcess(pid: string): void;
     getProcessById(pid: string): IProcess | undefined;
-    // request independence from own parent
-    detach(pid: string): boolean;
-    // Probably we should remove detach() and move detaching to setParent(thisid, undefined)
-    setParent(pid: string, parentId: string): boolean;    
+
+    // passing undefined as parentId means "make me a root process"
+    // i.e. one that will not be killed if another process is killed
+    setParent(pid: string, parentId?: string): boolean;    
 }
 ```
 
@@ -100,7 +99,7 @@ class ExampleProcess implements IPosisProcess {
             msg: 'Hello World!'
         })
         kernel.detach(child.id)
-        this.exit() // Removed exit code
+        queryPosisInterface('baseKernel').killProcess(this.id) // Removed exit code
     }
 }
 class AnotherProcess implements IPosisProcess {
@@ -113,7 +112,7 @@ class AnotherProcess implements IPosisProcess {
 class YetAnotherProcess implements IPosisProcess {
     run(){
         let IPC = queryPosisInterface('ipc')
-        if(!IPC) return this.exit()
+        if(!IPC) return queryPosisInterface('baseKernel').killProcess(this.id)
         IPC.call(0, 'someMethod or whatever')
     }
 }
