@@ -67,4 +67,4 @@ declare const kernel: IKernel;
 
 // HACK! 
 declare function registerPosisProcess(imageName: string, constructor: new () => IPosisProcess): boolean;
-declare function queryPosisInterface<TQI extends IPosisExtension>(interfaceId: string): TQI | undefined;
+declare function queryPosisInterface(interfaceId: string): IPosisExtension | undefined;

@@ -1,4 +1,4 @@
-interface IPosisKernel {
+interface IPosisKernel extends IPosisExtension {
     startProcess(parent: IPosisProcess, imageName: string, startContext: any): IPosisProcess | undefined;
     // killProcess also kills all children of this process
     // note to the wise: probably absorb any calls to this that would wipe out your entire process tree.

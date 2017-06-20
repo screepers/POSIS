@@ -4,7 +4,7 @@ declare const global: {
     // if you have several programs that are logically grouped (a "bundle") you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
     registerPosisProcess(imageName: string, constructor: new () => IPosisProcess): boolean;
     // For querying extension interfaces (instead of tying ourselves to "levels")
-    queryPosisInterface<TQI extends IPosisExtension>(interfaceId: string): TQI | undefined;
+    queryPosisInterface(interfaceId: string): IPosisExtension | undefined;
 };
 
 type PosisPID = string | number;

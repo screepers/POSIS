@@ -78,7 +78,7 @@ function RandomIDGenerator(): string {
     return Math.random().toString().slice(2);
 }
 
-class PosisKernel implements IPosisKernel, IPosisExtension {
+class PosisKernel implements IPosisKernel {
     private kernel: IKernel;
     constructor(kernel: IKernel) {
         this.kernel = kernel;
@@ -107,11 +107,11 @@ class PosisKernel implements IPosisKernel, IPosisExtension {
 }
 
 // Runtime stuff
-let pkernel: any = new PosisKernel(kernel);
-let spawnExtension: any = new SpawnExtension();
+let pkernel = new PosisKernel(kernel);
+let spawnExtension = new SpawnExtension();
 
 // For querying extension interfaces (instead of tying ourselves to "levels")
-global.queryPosisInterface = function<TQI extends IPosisExtension>(interfaceId: string): IPosisExtension & TQI | undefined {
+global.queryPosisInterface = function(interfaceId: string): IPosisExtension | undefined {
     if (interfaceId === "baseKernel") return pkernel;
     if (interfaceId === "spawn-v1") return spawnExtension;
     return;
