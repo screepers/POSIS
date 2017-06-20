@@ -8,13 +8,18 @@ Live editing [here](https://hackmd.io/GwBhBNgdgJgQwLQEYCcoEBYDMAjAxgnOOIjABwQBmM
 - Needs namespacing
 - Needs entry point (to get constructor registry and root process to start)
 
+- PID Type
+```typescript
+type PosisPID = string | number;
+```
+
 - POSIS program registry:
 ```typescript
 declare var global {
     // register this function before require()ing your POSIS program bundles; they can call this at the end of their source file to register themselves
     // name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
     // if you have several programs that are logically grouped (a "bundle") you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
-    registerPosisProcess(imageName: string, constructor: any);
+    registerPosisProcess(imageName: string, constructor: new ()=>IPosisProcess);
     // For querying extension interfaces (instead of tying ourselves to "levels")
     queryPosisInterface<
         TQI extends IPosisExtension
@@ -28,8 +33,8 @@ declare var global {
 interface IPosisProcess {
     memory: any; // private memory
     imageName: string; // image name (maps to constructor)
-    id: string; // ID
-    parentId: string; // Parent ID
+    id: PosisPID; // ID
+    parentId: PosisPID; // Parent ID
     log: IPosisLogger; // Logger 
     run(): void; // main function
 }
@@ -50,12 +55,12 @@ interface IPosisKernel {
     startProcess(parent: IProcess, imageName: string, startContext: any): IProcess | undefined;
     // killProcess also kills all children of this process
     // note to the wise: probably absorb any calls to this that would wipe out your entire process tree.
-    killProcess(pid: string): void;
-    getProcessById(pid: string): IProcess | undefined;
+    killProcess(pid: PosisPID): void;
+    getProcessById(pid: PosisPID): IProcess | undefined;
 
     // passing undefined as parentId means "make me a root process"
     // i.e. one that will not be killed if another process is killed
-    setParent(pid: string, parentId?: string): boolean;    
+    setParent(pid: PosisPID, parentId?: PosisPID): boolean;    
 }
 ```
 
