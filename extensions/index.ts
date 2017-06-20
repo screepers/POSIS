@@ -1,1 +1,0 @@
-export { IPosisSpawnExtension } from "./IPosisSpawnExtension";

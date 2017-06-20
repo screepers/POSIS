@@ -1,19 +1,20 @@
-import { IPosisProcess, IPosisLogger, IPosisExtension } from "../core";
-import { IPosisSpawnExtension } from "../extensions";
+// 
 
 export function registerPosisProcess(imageName: string, constructor: any): boolean {
     return true;
 };
+let spawnExtension: SpawnExtension = new SpawnExtension();
 // For querying extension interfaces (instead of tying ourselves to "levels")
 export function queryPosisInterface<TQI extends IPosisExtension>(interfaceId: string): TQI | undefined {
+    if (interfaceId === "spawn-v1") return spawnExtension;
     return;
 };
 
 export abstract class PosisBaseProcess implements IPosisProcess {
     memory: any;
     imageName: string;
-    id: string;
-    parentId: string;
+    id: PosisPID;
+    parentId: PosisPID;
     log: IPosisLogger;
     abstract run(): void;
 }

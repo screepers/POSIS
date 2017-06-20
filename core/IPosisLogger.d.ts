@@ -1,4 +1,4 @@
-export interface IPosisLogger {
+interface IPosisLogger {
     // because sometimes you don't want to eval arguments to ignore them
     debug(message: (() => string) | string): void;
     info(message:  (() => string) | string): void;

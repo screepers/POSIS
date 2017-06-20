@@ -1,6 +1,3 @@
-import { IPosisKernel } from "../core";
-import { PosisBaseProcess, queryPosisInterface, registerPosisProcess } from "./posis";
-
 class ExampleProcess extends PosisBaseProcess {
   run () {
     let kernel: IPosisKernel = queryPosisInterface<IPosisKernel>("baseKernel");
