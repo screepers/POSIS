@@ -15,6 +15,14 @@ declare var global {
     // name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
     // if you have several programs that are logically grouped (a "bundle") you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
     registerPosisProcess(imageName: string, constructor: any);
+    // For querying extension interfaces (instead of tying ourselves to "levels")
+    // todo: typing magic so we can have more interface signatures - On it (Prime)
+    // assuming: interface IPosisExtension extends IPosisLevel1Kernel { }
+    queryPosisInterface<
+        TQI extends IPosisExtension
+    >(
+        interfaceId: string
+    ): TQI | undefined;
 }
 ```
 
@@ -25,7 +33,7 @@ interface IPosisProcess {
     id: string; // ID
     parentId: string; // Parent ID
     log: IPosisLogger; // Logger 
-    run(kernel: IPosisKernel): void; // main function
+    run(): void; // main function
     exit(): void; // Exit
 }
 ```
@@ -50,15 +58,7 @@ interface IPosisKernel {
     // request independence from own parent
     detach(pid: string): boolean;
     // Probably we should remove detach() and move detaching to setParent(thisid, undefined)
-    setParent(pid: string, parentId: string): boolean;
-    // For querying extension interfaces (instead of tying ourselves to "levels")
-    // todo: typing magic so we can have more interface signatures - On it (Prime)
-    // assuming: interface IPosisExtension extends IPosisLevel1Kernel { }
-    queryPosisInterface<
-        TQI extends IPosisExtension
-    >(
-        interfaceId: string
-    ): TQI | undefined;
+    setParent(pid: string, parentId: string): boolean;    
 }
 ```
 
