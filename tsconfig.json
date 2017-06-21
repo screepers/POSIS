@@ -1,10 +1,11 @@
 {	
 	"compilerOptions":{
+		"moduleResolution":"classic",
 		"module": "commonjs",
 		"outDir":"build",
 		"noImplicitAny" : true,
 		"target":"ES6"
 	},
-	"files":["examples/ags.example.ts"],
+	"files":["examples/main.ts"],
 	"include":["**/*.d.ts"]
 }

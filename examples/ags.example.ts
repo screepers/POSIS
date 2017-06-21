@@ -1,6 +1,9 @@
-import { PosisBaseProcess } from "./posis";
-
-class ExampleProcess extends PosisBaseProcess {
+class ExampleProcess implements IPosisProcess {
+  memory: any; // private memory
+  imageName: string; // image name (maps to constructor)
+  id: PosisPID; // ID
+  parentId: PosisPID; // Parent ID
+  log: IPosisLogger; // Logger 
   run () {
     let kernel: IPosisKernel = queryPosisInterface("baseKernel") as IPosisKernel;
     let child = kernel.startProcess(this, "AGS/AnotherProcess", {
@@ -10,7 +13,12 @@ class ExampleProcess extends PosisBaseProcess {
     kernel.killProcess(this.id); // Removed exit code
   }
 }
-class AnotherProcess extends PosisBaseProcess {
+class AnotherProcess implements IPosisProcess {
+  memory: any; // private memory
+  imageName: string; // image name (maps to constructor)
+  id: PosisPID; // ID
+  parentId: PosisPID; // Parent ID
+  log: IPosisLogger; // Logger 
   run() {
     let kernel: IPosisKernel = queryPosisInterface("baseKernel") as IPosisKernel;
     let parent = kernel.getProcessById(this.parentId);
@@ -33,3 +41,5 @@ registerPosisProcess("AGS/AnotherProcess", AnotherProcess);
 
 // In kernel or some other location for loading processes
 // require("ags.example.js")
+
+export {};
