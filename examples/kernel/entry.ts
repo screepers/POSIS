@@ -23,7 +23,8 @@ interface ProcessInfo {
   name: string;
   ns: string;
   status: string;
-  timestamp: number;
+  started: number;
+  ended?: number;
   process?: IPosisProcess;
   error?: string;
 }
@@ -33,7 +34,8 @@ interface ProcessTable {
 }
 
 class BaseKernel implements IPosisKernel {
-  private processCache: { [id: string]: IPosisProcess } = {};
+  private processInstanceCache: { [id: string]: IPosisProcess } = {};
+  private currentId: string = "";
   get memory(): any {
     Memory.kernel = Memory.kernel || {};
     return Memory.kernel;
@@ -46,16 +48,16 @@ class BaseKernel implements IPosisKernel {
     this.memory.processMemory = this.memory.processMemory || {};
     return this.memory.processMemory;
   }
-  startProcess(parent: IPosisProcess | null, imageName: string, startContext: any): IPosisProcess | undefined {
+  startProcess(imageName: string, startContext: any): IPosisProcess | undefined {
     let id = UID() as PosisPID;
 
     let pinfo: ProcessInfo = {
       id: id,
-      pid: parent && parent.id || 0,
+      pid: this.currentId,
       name: imageName,
       ns: `ns_${id}`,
       status: "running",
-      timestamp: Game.time
+      started: Game.time
     };
     this.processTable[id] = pinfo;
     this.processMemory[pinfo.ns] = startContext || {};
@@ -71,7 +73,7 @@ class BaseKernel implements IPosisKernel {
     let process = processRegistry.getNewProcess(pinfo.name);
     if (!process) throw new Error(`Could not create process ${pinfo.id} ${pinfo.name}`);
     let self = this;
-    this.processCache[id] = process;
+    this.processInstanceCache[id] = process;
     Object.defineProperties(process, {
       id: {
         writable: false,
@@ -87,7 +89,7 @@ class BaseKernel implements IPosisKernel {
       },
       log: {
         writable: false,
-        value: new Logger(pinfo)
+        value: new Logger(process)
       },
       memory: {
         get() {
@@ -101,13 +103,21 @@ class BaseKernel implements IPosisKernel {
   // killProcess also kills all children of this process
   // note to the wise: probably absorb any calls to this that would wipe out your entire process tree.
   killProcess(id: PosisPID): void {
-    if (this.processTable[id]) {
-      this.processTable[id].status = "killed";
+    let pinfo = this.processTable[id];
+    if (!pinfo) return;
+    console.log(`killed`, id);
+    pinfo.status = "killed";
+    let ids = Object.keys(this.processTable);
+    for (let i = 0; i < ids.length; i++) {
+      let id = ids[i];
+      if (this.processTable[id].pid === pinfo.id) {
+        this.killProcess(id);
+      }
     }
   }
 
   getProcessById(id: PosisPID): IPosisProcess | undefined {
-    return this.processTable[id] && this.processTable[id].status === "running" && (this.processCache[id] || this.createProcess(id));
+    return this.processTable[id] && this.processTable[id].status === "running" && (this.processInstanceCache[id] || this.createProcess(id));
   }
 
   // passing undefined as parentId means "make me a root process"
@@ -127,7 +137,7 @@ class BaseKernel implements IPosisKernel {
     for (let i = 0; i < ids.length; i++) {
       let id = ids[i];
       let pinfo = this.processTable[id];
-      if (pinfo.status !== "running" && pinfo.timestamp < Game.time - 100) {
+      if (pinfo.status !== "running" && pinfo.ended < Game.time - 100) {
         delete this.processTable[id];
       }
       if (pinfo.status !== "running") continue;
@@ -135,8 +145,11 @@ class BaseKernel implements IPosisKernel {
         console.log(JSON.stringify(pinfo.process));
         let proc = this.getProcessById(id);
         if (!proc) throw new Error(`Could not get process ${id} ${pinfo.name}`);
+        this.currentId = id;
         proc.run();
+        this.currentId = "";
       } catch (e) {
+        this.killProcess(id);
         pinfo.status = "crashed";
         pinfo.error = e.stack || e.toString();
         console.log(Game.time, id, "crashed", e.stack);
@@ -158,7 +171,7 @@ global.registerPosisProcess = function(imageName: string, constructor: any): boo
 };
 
 function UID(): string {
-  return "P" + Game.time.toString(16) + "_" + Math.random().toString(16).slice(2);
+  return "P" + Game.time.toString(26).slice(-6) + Math.random().toString(26).slice(-3);
 }
 export function loop() {
   pkernel.loop();

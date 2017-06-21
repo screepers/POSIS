@@ -6,7 +6,7 @@ class ExampleProcess implements IPosisProcess {
   log: IPosisLogger; // Logger 
   run () {
     let kernel: IPosisKernel = queryPosisInterface("baseKernel") as IPosisKernel;
-    let child = kernel.startProcess(this, "AGS/AnotherProcess", {
+    let child = kernel.startProcess("AGS/AnotherProcess", {
       msg: "Hello World!"
     });
     kernel.setParent(child.id);

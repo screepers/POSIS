@@ -18,7 +18,7 @@ class Init implements IPosisProcess {
     let parent = kernel.getProcessById(this.parentId);
     this.log.info(`TICK! ${Game.time} ${this.memory.msg || "init"}`);
     if (!this.posisTest) {
-      let child = kernel.startProcess(this, "POSISTest/PosisBaseTestProcess", {
+      let child = kernel.startProcess("POSISTest/PosisBaseTestProcess", {
         maxRunTime: 5
       });
       this.posisTest = child;

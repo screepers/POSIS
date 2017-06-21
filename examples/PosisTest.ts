@@ -76,7 +76,7 @@ class POSISTest_BaseProcess implements IPosisProcess
     if (this.tmemory.supposedToBeDead)
       this.log.error(`${this.testName}: can't exit`);
 
-    this.log.info(`${this.testName}: started on ${this.tmemory.started}, running for ${Game.time - this.tmemory.lastTick!}`);
+    this.log.info(`${this.testName}: started on ${this.tmemory.started}, running for ${Game.time - this.tmemory.started!}`);
 
     if (this.tmemory.maxRunTime === undefined)
     {
@@ -84,7 +84,7 @@ class POSISTest_BaseProcess implements IPosisProcess
       return;
     }
 
-    if (Game.time - this.tmemory.lastTick! >= this.tmemory.maxRunTime!)
+    if (Game.time - this.tmemory.started! >= this.tmemory.maxRunTime!)
     {
       this.tmemory.supposedToBeDead = true;
       kernel.killProcess(this.id);
