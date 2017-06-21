@@ -52,7 +52,8 @@ interface IPosisLogger {
 
 ```typescript
 interface IPosisKernel {
-    startProcess(parent: IProcess, imageName: string, startContext: any): IProcess | undefined;
+    // Kernel is expected to set parent to current running process
+    startProcess(imageName: string, startContext: any): IProcess | undefined;
     // killProcess also kills all children of this process
     // note to the wise: probably absorb any calls to this that would wipe out your entire process tree.
     killProcess(pid: PosisPID): void;
