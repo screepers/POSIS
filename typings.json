@@ -1,0 +1,6 @@
+{
+  "name": "posis-api",
+  "globalDependencies": {
+    "typed-screeps": "github:screepers/typed-screeps/dist/screeps.d.ts#master"
+  }
+}
