@@ -1,10 +1,12 @@
+type PosisInterface = "baseKernel" | "spawn";
+
 interface Global {
     // register this function before require()ing your POSIS program bundles; they can call this at the end of their source file to register themselves
     // name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
     // if you have several programs that are logically grouped (a "bundle") you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
     registerPosisProcess(imageName: string, constructor: new () => IPosisProcess): boolean;
     // For querying extension interfaces (instead of tying ourselves to "levels")
-    queryPosisInterface(interfaceId: string): IPosisExtension | undefined;
+    queryPosisInterface(interfaceId: PosisInterface): IPosisExtension | undefined;
 }
 
 type PosisPID = string | number;
@@ -36,10 +38,10 @@ interface IPosisProcess {
     run(): void; // main function
 }
 interface IPosisSpawnExtension {
-  // Queues/Spawns the creep and returns an ID
-  spawnCreep(sourceRoom: string, targetRoom: string, body: string[], memory: any): string;
-  // Used to see if its been dropped from queue
-  isValid(id: string): boolean;
-  hasSpawned(id: string): boolean;
-  getCreep(id: string): Creep | undefined;
+    // Queues/Spawns the creep and returns an ID
+    spawnCreep(sourceRoom: string, targetRoom: string, body: string[], memory: any): string;
+    // Used to see if its been dropped from queue
+    isValid(id: string): boolean;
+    hasSpawned(id: string): boolean;
+    getCreep(id: string): Creep | undefined;
 }
