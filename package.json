@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "typings install",
     "prebuild": "rimraf dist/*",
-    "build": "tsc && dts-generator --exclude 'node_modules/**/*.d.ts' --exclude 'typings/**/*.d.ts' --name posis-api --project ./ --out ./dist/index.d.ts"
+    "build": "tsc && dts-generator --exclude \"node_modules/**/*.d.ts\" --exclude \"typings/**/*.d.ts\" --name posis-api --project ./ --out ./dist/index.d.ts"
   },
   "repository": {
     "type": "git",
