@@ -1,0 +1,32 @@
+{
+  "name": "posis-api",
+  "version": "1.0.0",
+  "description": "POSIS (like POSIX but for screeps OS",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "postinstall": "typings install",
+    "prebuild": "rimraf dist/*",
+    "build": "tsc && dts-generator --exclude node_modules/**/*.d.ts --exclude typings/**/*.d.ts --name posis-api --project ./ --out ./dist/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/screepers/POSIS.git"
+  },
+  "keywords": [
+    "POSIS",
+    "screeps"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/screepers/POSIS/issues"
+  },
+  "homepage": "https://github.com/screepers/POSIS#readme",
+  "devDependencies": {
+    "rimraf": "^2.6.1",
+    "typescript": "^2.3.4",
+    "dts-generator": "^2.1.0",
+    "tslint": "^5.4.3",
+    "typings":"^2.1.1"
+  }
+}
