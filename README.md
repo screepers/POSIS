@@ -13,28 +13,27 @@ Live editing [here](https://hackmd.io/GwBhBNgdgJgQwLQEYCcoEBYDMAjAxgnOOIjABwQBmM
 type PosisPID = string | number;
 ```
 
-- POSIS program registry:
+- POSIS Interfaces
 ```typescript
-declare var global {
-    // register this function before require()ing your POSIS program bundles; they can call this at the end of their source file to register themselves
-    // name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
-    // if you have several programs that are logically grouped (a "bundle") you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
-    registerPosisProcess(imageName: string, constructor: new () => IPosisProcess);
-    // For querying extension interfaces (instead of tying ourselves to "levels")
-    queryPosisInterface<
-        TQI extends IPosisExtension
-    >(
-        interfaceId: string
-    ): TQI | undefined;
+type PosisInterfaces = {
+	baseKernel: IPosisKernel;
+	spawn: IPosisSpawnExtension;
+}
+```
+
+- POSIS process registry:
+```typescript
+interface IPosisProcessRegistry {
+	// name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
+	// if your bundle consists of several programs you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
+	register(imageName: string, constructor: new () => IPosisProcess): boolean;
 }
 ```
 
 ```typescript
 // Bundle for programs that are logically grouped
 interface IPosisBundle {
-	// name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
-	// if your bundle consists of several programs you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
-	install(registerPosisProcess: (imageName: string, constructor: new () => IPosisProcess) => boolean): void;
+	install(registry: IPosisProcessRegistry): void;
 }
 ```
 
@@ -64,11 +63,11 @@ interface IPosisLogger {
 ```typescript
 interface IPosisKernel {
     // Kernel is expected to set parent to current running process
-    startProcess(imageName: string, startContext: any): IProcess | undefined;
+    startProcess(imageName: string, startContext: any): IPosisProcess | undefined;
     // killProcess also kills all children of this process
     // note to the wise: probably absorb any calls to this that would wipe out your entire process tree.
     killProcess(pid: PosisPID): void;
-    getProcessById(pid: PosisPID): IProcess | undefined;
+    getProcessById(pid: PosisPID): IPosisProcess | undefined;
 
     // passing undefined as parentId means "make me a root process"
     // i.e. one that will not be killed if another process is killed
