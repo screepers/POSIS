@@ -1,16 +1,9 @@
-type PosisInterface = "baseKernel" | "spawn";
-
-interface Global {
-    // register this function before require()ing your POSIS program bundles; they can call this at the end of their source file to register themselves
-    // name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
-    // if you have several programs that are logically grouped (a "bundle") you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
-    registerPosisProcess(imageName: string, constructor: new () => IPosisProcess): boolean;
-    // For querying extension interfaces (instead of tying ourselves to "levels")
-    queryPosisInterface(interfaceId: PosisInterface): IPosisExtension | undefined;
-}
-
-type PosisPID = string | number;
-interface IPosisExtension {}
+// Bundle for programs that are logically grouped
+interface IPosisBundle {
+	// name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
+	// if your bundle consists of several programs you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
+	install(registerPosisProcess: (imageName: string, constructor: new () => IPosisProcess) => boolean): void;
+}interface IPosisExtension {}
 interface IPosisKernel extends IPosisExtension {
     startProcess(imageName: string, startContext: any): IPosisProcess | undefined;
     // killProcess also kills all children of this process
@@ -34,8 +27,16 @@ interface IPosisProcess {
     imageName: string; // image name (maps to constructor)
     id: PosisPID; // ID
     parentId: PosisPID; // Parent ID
-    log: IPosisLogger; // Logger 
+    log: IPosisLogger; // Logger
+    // For querying extension interfaces (instead of tying ourselves to "levels")
+    queryPosisInterface<T extends keyof PosisInterfaces>(interfaceId: T): PosisInterfaces[T] | undefined;
     run(): void; // main function
+}
+type PosisPID = string | number;
+
+type PosisInterfaces = {
+	baseKernel: IPosisKernel;
+	spawn: IPosisSpawnExtension;
 }
 interface IPosisSpawnExtension {
     // Queues/Spawns the creep and returns an ID
