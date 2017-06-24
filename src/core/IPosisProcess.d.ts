@@ -7,11 +7,13 @@ interface IPosisProcessContext {
     queryPosisInterface<T extends keyof PosisInterfaces>(interfaceId: T): PosisInterfaces[T] | undefined;
 }
 
+// Bundle: Don't write to context object (including setting new props on it), host will likely freeze it anyway. 
+// Host: freeze the thing!
+interface PosisProcessConstructor {
+    new (context: IPosisProcessContext): IPosisProcess;
+}
+
 interface IPosisProcess {
     // Main function, implement all process logic here. 
-    // Bundle: Don't write to context object (including setting new props on it), host will likely freeze it anyway. 
-    // Host: freeze the thing!
-    constructor(context: IPosisProcessContext);
-
     run(): void; 
 }
