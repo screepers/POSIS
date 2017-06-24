@@ -8,5 +8,8 @@ interface IPosisProcessContext {
 }
 
 interface IPosisProcess {
-    run(context: IPosisProcessContext): void; // main function
+    // Main function, implement all process logic here. 
+    // Bundle: Don't write to context object, host will likely freeze it anyway. 
+    // Host: freeze the thing!
+    run(context: IPosisProcessContext): void; 
 }
