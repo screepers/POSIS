@@ -1,9 +1,9 @@
 declare const enum EPosisSpawnStatus {
-  UNKNOWN = -2,
-  ERROR = -1,
-  QUEUED,
-  SPAWNING,
-  SPAWNED
+    UNKNOWN = -2,
+    ERROR = -1,
+    QUEUED,
+    SPAWNING,
+    SPAWNED
 }
 
 // NOT FINAL, discussions still underway in slack #posis
@@ -17,8 +17,8 @@ interface IPosisSpawnExtension {
     spawnCreep(rooms: string[], body: string[][], memory?: any, opts?: { priority?: number }): string;
     // Used to see if its been dropped from queue
     getStatus(id: string): {
-      status: EPosisSpawnStatus
-      message?:string
+        status: EPosisSpawnStatus
+        message?: string
     }
     getCreep(id: string): Creep | undefined;
 }
