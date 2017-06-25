@@ -12,11 +12,11 @@ See [POSIX](https://en.wikipedia.org/wiki/POSIX).
 - Host starts one or more bundle's processes, possibly using optional `rootImageName` specified by the bundle.
 - A bundle process gets constructed with `IPosisProcessContext` -- a host provided handler carrying memory accessor and other goodies. See [IPosisProcessContext](./src/core/IPosisProcess.d.ts).
 - Eventually host runs the process by executing its `run()` method. See [IPosisProcess](./src/core/IPosisProcess.d.ts).
-- Process queries [interfaces](##Extensions) that the host provides and uses them to do evil or launch more child processes.
+- Process queries [interfaces](#extensions) that the host provides and uses them to do evil or launch more child processes.
 
 ## Writing compatibility layer
 
-Host OS must provide at least `IPosisKernel` implementation, and ideally all other defined [extensions](##Extensions).
+Host OS must provide at least `IPosisKernel` implementation, and ideally all other defined [extensions](#extensions).
 
 This project provides typescript interfaces that serve as is in typescript projects and as documentation for poor souls using plain JS.
 
