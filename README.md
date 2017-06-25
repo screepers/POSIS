@@ -1,186 +1,55 @@
 # POSIS
 Portable Operating System Interface for Screeps
 
-# Current Draft
+## Rationale
+See [POSIX](https://en.wikipedia.org/wiki/POSIX).
 
-Live editing [here](https://hackmd.io/GwBhBNgdgJgQwLQEYCcoEBYDMAjAxgnOOIjABwQBmMK4IGIZQA==)
+## Basic general workflow
 
-- Needs namespacing
-- Needs entry point (to get constructor registry and root process to start)
+- Host OS loads a foreign bundle in its own way (usually an import somewhere)
+- Host calls `install(registry: IPosisProcessRegistry)` on the bundle (see [IPosisBundle](./src/core/IPosisBundle.d.ts))
+- Bundle registers all its processes by calling `registry.register(...)` for each of them (see [IPosisProcessRegistry](./src/core/IPosisProcessRegistry.d.ts)). This puts processes in host's general process registry (details are specific to particular host).
+- Host starts one or more bundle's processes, possibly using optional `rootImageName` specified by the bundle.
+- A bundle process gets constructed with `IPosisProcessContext` -- a host provided handler carrying memory accessor and other goodies. See [IPosisProcessContext](./src/core/IPosisProcess.d.ts).
+- Eventually host runs the process by executing its `run()` method. See [IPosisProcess](./src/core/IPosisProcess.d.ts).
+- Process queries [interfaces](##Extensions) that the host provides and uses them to do evil or launch more child processes.
 
-- PID Type
-```typescript
-type PosisPID = string | number;
+## Writing compatibility layer
+
+Host OS must provide at least `IPosisKernel` implementation, and ideally all other defined [extensions](##Extensions).
+
+This project provides typescript interfaces that serve as is in typescript projects and as documentation for poor souls using plain JS.
+
+To use types in typescript project, install `typings`
 ```
-
-- POSIS Interfaces
-```typescript
-type PosisInterfaces = {
-	baseKernel: IPosisKernel;
-	spawn: IPosisSpawnExtension;
-}
+$ npm install typings --saveDev
 ```
-
-- POSIS process registry:
-```typescript
-interface IPosisProcessRegistry {
-	// name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
-	// if your bundle consists of several programs you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
-	register(imageName: string, constructor: new () => IPosisProcess): boolean;
-}
+Add or modify `typings.json` with 
 ```
-
-```typescript
-// Bundle for programs that are logically grouped
-interface IPosisBundle {
-	install(registry: IPosisProcessRegistry): void;
+{
+  "name": "whatever",
+  "globalDependencies": {
+    "posis-api": "github:screepers/POSIS/dist/index.d.ts#master"
+  }
 }
 ```
 
-```typescript
-interface IPosisProcess {
-    memory: any; // private memory
-    imageName: string; // image name (maps to constructor)
-    id: PosisPID; // ID
-    parentId: PosisPID; // Parent ID
-    log: IPosisLogger; // Logger
-    // For querying extension interfaces (instead of tying ourselves to "levels")
-    queryPosisInterface<T extends keyof PosisInterfaces>(interfaceId: T): PosisInterfaces[T] | undefined;
-    run(): void; // main function
-}
+Make sure typings are included in `tsconfig.json`
+```
+  "include": [
+    "typings/**/*.d.ts"
+   ]
 ```
 
-```typescript
-interface IPosisLogger {
-    // because sometimes you don't want to eval arguments to ignore them
-    debug(message: (() => string) | string): void;
-    info(message:  (() => string) | string): void;
-    warn(message:  (() => string) | string): void;
-    error(message: (() => string) | string): void;
-}
-```
+## Writing compatible process 
 
-```typescript
-interface IPosisKernel {
-    // Kernel is expected to set parent to current running process
-    startProcess(imageName: string, startContext: any): IPosisProcess | undefined;
-    // killProcess also kills all children of this process
-    // note to the wise: probably absorb any calls to this that would wipe out your entire process tree.
-    killProcess(pid: PosisPID): void;
-    getProcessById(pid: PosisPID): IPosisProcess | undefined;
+For an example see [test bundle](./examples/bundles/test.bundle.ts).
 
-    // passing undefined as parentId means "make me a root process"
-    // i.e. one that will not be killed if another process is killed
-    setParent(pid: PosisPID, parentId?: PosisPID): boolean;    
-}
-```
+## Extensions
+### IPosisKernel
 
-- Example global/kernel extension interface
-```typescript
-// this is not a good path cache extension interface.
-interface IPosisPathCacheExtension : IPosisExtension {
-    getNextMoveInPath(p: Path, pos: RoomPosition): number;
-}
+Base kernel, exposes ways to start/stop/reparent or find a process. [IPosisKernel](./src/core/IPosisKernel.d.ts)
 
-let pathCache = kernel.QueryPosisInterface<IPosisPathCacheExtension>("path-cache-v1");
-if (pathCache) {
-    // do stuff with getNextMoveInPath...
-} else {
-    // fall back to vanilla moveTo
-}
-```
+### IPosisSpawnExtension
 
-- Example process extension interface
-```typescript
-interface IPosisProcessSleepExtension : IPosisProcess {
-    sleep(ticks = 1);
-}
-
-function hasSleepExtension(process: IPosisProcess): process is IPosisProcessSleepExtension {
-    return (process.sleep !== undefined);
-}
-
-if (hasSleepExtension(this)) {
-    this.sleep(1);
-}
-```
-
-- Basic example process
-```typescript
-// ags.example.js
-class ExampleProcess implements IPosisProcess {
-    run(){
-        let kernel = queryPosisInterface('baseKernel') // 'baseKernel_level1'?
-        let child = kernel.startProcess(this.id, 'AGS/AnotherProcess',{ 
-            msg: 'Hello World!'
-        })
-        kernel.detach(child.id)
-        queryPosisInterface('baseKernel').killProcess(this.id) // Removed exit code
-    }
-}
-class AnotherProcess implements IPosisProcess {
-    run(){
-        let kernel = queryPosisInterface('baseKernel') // 'baseKernel_level1'?
-        let parent = kernel.getProcessById(this.parentId)
-        this.log.info('TICK!', Game.time, this.memory.msg)
-    }
-}
-class YetAnotherProcess implements IPosisProcess {
-    run(){
-        let IPC = queryPosisInterface('ipc')
-        if(!IPC) return queryPosisInterface('baseKernel').killProcess(this.id)
-        IPC.call(0, 'someMethod or whatever')
-    }
-}
-registerPosisProcess('AGS/ExampleProcess', ExampleProcess)
-registerPosisProcess('AGS/AnotherProcess', AnotherProcess)
-registerPosisProcess('AGS/YetAnotherProcess', YetAnotherProcess)
-
-
-// In kernel or some other location for loading processes
-require('ags.example.js')
-```
-
-
-- Spawn Extension
-```typescript
-// Needs review
-interface IPosisSpawnExtension {
-    // Queues/Spawns the creep and returns an ID
-    spawnCreep(sourceRoom: string, targetRoom: string, body: string[], memory: any): string 
-    // Used to see if its been dropped from queue
-    isValid(id: string): bool 
-    hasSpawned(id: string): bool
-    getCreep(id: string): Creep | undefined
-}
-```
-
-```typescript
-// An implementation of the above based on my (ags) codebase, feel free to ignore....
-class SpawnExtension implements IPosisSpawnExtension {
-    constructor(){
-     // Implementation specific setup
-     this.register = {}
-    }
-    spawnCreep(sourceRoom: string, targetRoom: string, body: string[], memory: any): string {
-        let room = Game.rooms[sourceRoom]
-        let id = RandomIDGenerator() // Magic
-        memory._id = id
-        this.register[id] = { room: sourceRoom, body, memory }
-        room.spawnRole(id, ROLE_CUSTOM, { body: body }, memory)
-        return id;
-    }
-    // Dirty hacky examples below....
-    isValid(id): bool {
-        if(!this.register[id]) return false
-        let room = Game.rooms[this.register[id].room]
-        return !!room.memory.spawnQueue.find(item=>item.memory._id == id)
-    }
-    hasSpawned(id: string): bool {
-        return !!this.getCreep(id)
-    }
-    getCreep(id: string): Creep | undefined {
-        return _.find(Game.creeps, c=>c.memory._id == id) || undefined
-    }
-}
-```
+## Known posis bundles
