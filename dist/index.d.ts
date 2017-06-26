@@ -11,7 +11,7 @@ interface IPosisBundle<IDefaultRootMemory> {
 	// image name of root process in the bundle, if any
 	rootImageName?: string;
 	// function returning default starting memory for root process, doubles as public parameter documentation
-	defaultRootMemory?: () => IDefaultRootMemory;
+	makeDefaultRootMemory?: (override?: IDefaultRootMemory) => IDefaultRootMemory;
 }
 interface IPosisExtension {}
 interface IPosisKernel extends IPosisExtension {
