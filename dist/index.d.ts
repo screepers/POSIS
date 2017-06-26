@@ -70,7 +70,7 @@ declare const enum EPosisSpawnStatus {
 
 interface IPosisSpawnExtension {
     // Queues/Spawns the creep and returns an ID
-    spawnCreep(rooms: string[], body: string[][], memory?: any, opts?: { priority?: number }): string;
+    spawnCreep(rooms: string[], body: string[][], opts?: { priority?: number }): string;
     // Used to see if its been dropped from queue
     getStatus(id: string): {
         status: EPosisSpawnStatus
