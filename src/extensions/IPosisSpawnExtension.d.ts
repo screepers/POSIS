@@ -18,9 +18,10 @@ interface IPosisSpawnExtension {
         //     Must contain at least one room. Host should select spawner based on its own logic
         //     May contain additional rooms as a hints to host. Host may ignore hints
         rooms: string[], 
-        //   - 'body' are body variants of the creep being spawned, al least one must be provided
+        //   - 'body' are body variants of the creep being spawned, at least one must be provided
         //     Host must guarantee that the spawning creep will have one of provided bodies
         //     Which body to spawn is up to host to select based on its own logic
+        //     Body templates should be sorted in the order of diminishing desirability
         body: string[][], 
         //   - 'priority' is spawn priority in range -1000 (the highest) to 1000 (the lowest)
         //     Used as a hint for host's logic. Host may (but not guarantee) spawn creeps in priority order
