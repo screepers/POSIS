@@ -52,7 +52,7 @@ interface IPosisProcessRegistry {
 }
 type PosisPID = string | number;
 
-type PosisInterfaces = {
+interface PosisInterfaces {
 	baseKernel: IPosisKernel;
 	spawn: IPosisSpawnExtension;
 }
