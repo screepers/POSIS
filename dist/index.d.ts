@@ -1,20 +1,22 @@
 type PosisPID = string | number;
 
-type PosisInterfaces = {
+interface PosisInterfaces {
 	baseKernel: IPosisKernel;
 	spawn: IPosisSpawnExtension;
 	sleep: IPosisSleepExtension;
 }
 // Bundle for programs that are logically grouped
-interface IPosisBundle {
+interface IPosisBundle<IDefaultRootMemory> {
+	// host will call that once, possibly outside of main loop, registers all bundle processes here
 	install(registry: IPosisProcessRegistry): void;
-
 	// image name of root process in the bundle, if any
 	rootImageName?: string;
+	// function returning default starting memory for root process, doubles as public parameter documentation
+	makeDefaultRootMemory?: (override?: IDefaultRootMemory) => IDefaultRootMemory;
 }
 interface IPosisExtension {}
 interface IPosisKernel extends IPosisExtension {
-    startProcess(imageName: string, startContext: any): IPosisProcess | undefined;
+    startProcess(imageName: string, startContext: any): { pid: PosisPID; process: IPosisProcess } | undefined;
     // killProcess also kills all children of this process
     // note to the wise: probably absorb any calls to this that would wipe out your entire process tree.
     killProcess(pid: PosisPID): void;
@@ -79,9 +81,10 @@ interface IPosisSpawnExtension {
         //     Must contain at least one room. Host should select spawner based on its own logic
         //     May contain additional rooms as a hints to host. Host may ignore hints
         rooms: string[], 
-        //   - 'body' are body variants of the creep being spawned, al least one must be provided
+        //   - 'body' are body variants of the creep being spawned, at least one must be provided
         //     Host must guarantee that the spawning creep will have one of provided bodies
         //     Which body to spawn is up to host to select based on its own logic
+        //     Body templates should be sorted in the order of diminishing desirability
         body: string[][], 
         //   - 'priority' is spawn priority in range -1000 (the highest) to 1000 (the lowest)
         //     Used as a hint for host's logic. Host may (but not guarantee) spawn creeps in priority order
