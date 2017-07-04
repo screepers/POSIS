@@ -5,8 +5,9 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "postinstall": "typings install",
-    "prebuild": "rimraf dist/*",
-    "build": "tsc && dts-generator --exclude \"node_modules/**/*.d.ts\" --exclude \"typings/**/*.d.ts\" --name posis-api --project ./ --out ./dist/index.d.ts"
+    "prebuild": "rimraf dist/* && npm run test",
+    "build": "dts-generator --exclude \"node_modules/**/*.d.ts\" --exclude \"typings/**/*.d.ts\" --exclude \"examples/**/*.ts\" --name posis-api --project ./ --out ./dist/index.d.ts",
+    "test": "tsc"
   },
   "repository": {
     "type": "git",
