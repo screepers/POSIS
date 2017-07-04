@@ -1,10 +1,3 @@
-type PosisPID = string | number;
-
-interface PosisInterfaces {
-	baseKernel: IPosisKernel;
-	spawn: IPosisSpawnExtension;
-	sleep: IPosisSleepExtension;
-}
 // Bundle for programs that are logically grouped
 interface IPosisBundle<IDefaultRootMemory> {
 	// host will call that once, possibly outside of main loop, registers all bundle processes here
@@ -56,6 +49,23 @@ interface IPosisProcessRegistry {
 	// name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
 	// if your bundle consists of several programs you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
 	register(imageName: string, constructor: new (context: IPosisProcessContext) => IPosisProcess): boolean;
+}
+type PosisPID = string | number;
+
+interface PosisInterfaces {
+	baseKernel: IPosisKernel;
+	spawn: IPosisSpawnExtension;
+	sleep: IPosisSleepExtension;
+	coop: IPosisCooperativeScheduling;
+}
+interface IPosisCooperativeScheduling {
+    // CPU used by process so far. Might include setup time kernel chooses to charge to the process.
+    readonly used: number;
+    // CPU budget scheduler allocated to this process.
+    readonly budget: number;
+    // Process can wrap function and yield when it is ready to give up for the tick or can continue if CPU is available.
+    // optionally yield a shutdown function to perform shutdown tasks like saving current state
+    wrap?(makeIterator: () => IterableIterator<void | (() => void)>): void;
 }
 interface IPosisSleepExtension {
     // puts currently running process to sleep for a given number of ticks

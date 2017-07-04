@@ -105,7 +105,7 @@ class POSISTest_BaseProcess implements IPosisProcess
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export const bundle: IPosisBundle =
+export const bundle: IPosisBundle<any> =
 {
 	install(registry: IPosisProcessRegistry)
 	{
