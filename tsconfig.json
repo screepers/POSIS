@@ -1,12 +1,14 @@
 {
-	"target": "es6",
-	"newLine":"LF",
-	"pretty": true,
-	"declaration": true,
-	"declarationDir": "./dist",
+    "compilerOptions": {
+        "target": "es6",
+        "newLine": "LF",
+        "pretty": true,
+        "outDir": "build"
+    },
 	"include": 
 	[ 
 		"src/**/*.d.ts",
+        "examples/**/*.ts",
 		"typings/**/*.d.ts"
 	],
 	"exclude": 
