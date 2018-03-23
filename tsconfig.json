@@ -4,12 +4,11 @@
         "newLine": "LF",
         "pretty": true,
         "outDir": "build"
-    },
+	},
 	"include": 
 	[ 
 		"src/**/*.d.ts",
-        "examples/**/*.ts",
-		"typings/**/*.d.ts"
+        "examples/**/*.ts"
 	],
 	"exclude": 
 	[ 
