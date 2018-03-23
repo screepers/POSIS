@@ -8,7 +8,7 @@ class PosisTest_CooperativeSchedulingProcess implements IPosisProcess {
     protected coop: IPosisCooperativeScheduling;
 
     public constructor(context: IPosisProcessContext) {
-        this.coop = shimCooperativeScheduling(context.queryPosisExtension('coop'));
+        this.coop = shimCooperativeScheduling(context.queryPosisInterface('coop'));
     }
 
     public run(): void {
