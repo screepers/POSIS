@@ -36,4 +36,9 @@ interface IPosisSpawnExtension {
         message?: string
     }
     getCreep(id: string): Creep | undefined;
+    /**
+      * Cancel a previously ordered Creep (`spawnCreep`).
+      * Returns `true` if it was cancelled successfully.
+      */
+    cancelCreep(id: string): boolean;
 }
