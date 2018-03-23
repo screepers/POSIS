@@ -1,1 +1,1 @@
-declare interface IPosisExtension { }
+interface IPosisExtension {}

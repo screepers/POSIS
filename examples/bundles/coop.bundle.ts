@@ -1,6 +1,5 @@
 import shimCooperativeScheduling from '../shims/extensions/coop';
 
-// tslint:disable-next-line:class-name
 class PosisTest_CooperativeSchedulingProcess implements IPosisProcess {
 
     public static ImageName = "PosisTest/CooperativeSchedulingProcess";
@@ -8,7 +7,7 @@ class PosisTest_CooperativeSchedulingProcess implements IPosisProcess {
     protected coop: IPosisCooperativeScheduling;
 
     public constructor(context: IPosisProcessContext) {
-        this.coop = shimCooperativeScheduling(context.queryPosisExtension('coop'));
+        this.coop = shimCooperativeScheduling(context.queryPosisInterface('coop'));
     }
 
     public run(): void {
@@ -20,7 +19,7 @@ class PosisTest_CooperativeSchedulingProcess implements IPosisProcess {
                 // save results
             };
             // and some pretty logging if you want to
-        });
+        })
     }
 }
 
@@ -30,6 +29,6 @@ export default {
         registry.register(PosisTest_CooperativeSchedulingProcess.ImageName, PosisTest_CooperativeSchedulingProcess);
     },
 
-    rootImageName: PosisTest_CooperativeSchedulingProcess.ImageName
+    rootImageName: PosisTest_CooperativeSchedulingProcess.ImageName,
 
 } as IPosisBundle<undefined>;
