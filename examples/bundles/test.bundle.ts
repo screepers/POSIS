@@ -63,7 +63,7 @@ class POSISTest_BaseProcess implements IPosisProcess {
 
         this.context.log.error(`${this.testName}: basic diagnostics completed`);
 
-        const kernel = this.context.queryPosisExtension("baseKernel");
+        const kernel = this.context.queryPosisInterface("baseKernel");
 
         if (!kernel) {
             this.context.log.error(`${this.testName}: baseKernel interface is undefined, seriously people!`);
