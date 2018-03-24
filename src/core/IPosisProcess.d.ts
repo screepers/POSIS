@@ -4,7 +4,7 @@ interface IPosisProcessContext {
     readonly id: PosisPID; // ID
     readonly parentId: PosisPID; // Parent ID
     readonly log: IPosisLogger; // Logger 
-    queryPosisInterface<T extends keyof PosisInterfaces>(interfaceId: T): PosisInterfaces[T] | undefined;
+    queryPosisInterface<T extends keyof PosisInterfaces>(interfaceId: T): PosisInterfaces[T];
 }
 
 // Bundle: Don't write to context object (including setting new props on it), host will likely freeze it anyway. 

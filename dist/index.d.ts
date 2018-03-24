@@ -1,3 +1,12 @@
+type PosisPID = string | number;
+
+interface PosisInterfaces {
+    baseKernel: IPosisKernel;
+    spawn?: IPosisSpawnExtension;
+    sleep?: IPosisSleepExtension;
+    coop?: IPosisCooperativeScheduling;
+    [index: string]: IPosisExtension | undefined;
+}
 // Bundle for programs that are logically grouped
 interface IPosisBundle<IDefaultRootMemory> {
 	// host will call that once, possibly outside of main loop, registers all bundle processes here
@@ -32,7 +41,7 @@ interface IPosisProcessContext {
     readonly id: PosisPID; // ID
     readonly parentId: PosisPID; // Parent ID
     readonly log: IPosisLogger; // Logger 
-    queryPosisInterface<T extends keyof PosisInterfaces>(interfaceId: T): PosisInterfaces[T] | undefined;
+    queryPosisInterface<T extends keyof PosisInterfaces>(interfaceId: T): PosisInterfaces[T];
 }
 
 // Bundle: Don't write to context object (including setting new props on it), host will likely freeze it anyway. 
@@ -49,14 +58,6 @@ interface IPosisProcessRegistry {
 	// name your processes' image names with initials preceding, like ANI/MyCoolPosisProgram (but the actual class name can be whatever you want)
 	// if your bundle consists of several programs you can pretend that we have a VFS: "ANI/MyBundle/BundledProgram1"
 	register(imageName: string, constructor: new (context: IPosisProcessContext) => IPosisProcess): boolean;
-}
-type PosisPID = string | number;
-
-interface PosisInterfaces {
-	baseKernel: IPosisKernel;
-	spawn: IPosisSpawnExtension;
-	sleep: IPosisSleepExtension;
-	coop: IPosisCooperativeScheduling;
 }
 interface IPosisCooperativeScheduling {
     // CPU used by process so far. Might include setup time kernel chooses to charge to the process.
