@@ -4,10 +4,9 @@
   "description": "POSIS (like POSIX but for screeps OS",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "postinstall": "typings install",
     "prebuild": "rimraf dist/* && npm run test",
     "build": "dts-generator --exclude \"node_modules/**/*.d.ts\" --exclude \"typings/**/*.d.ts\" --exclude \"examples/**/*.ts\" --name posis-api --project ./ --out ./dist/index.d.ts",
-    "test": "tsc"
+    "test": "tslint \"./examples/**/*.ts\" \"./src/**/*.ts\""
   },
   "repository": {
     "type": "git",
@@ -24,10 +23,11 @@
   },
   "homepage": "https://github.com/screepers/POSIS#readme",
   "devDependencies": {
-    "rimraf": "^2.6.1",
-    "typescript": "^2.3.4",
     "dts-generator": "^2.1.0",
-    "tslint": "^5.4.3",
-    "typings":"^2.1.1"
-  }
+    "rimraf": "^2.6.1",
+    "tslint": "^5.9.1",
+    "typescript": "^2.3.4",
+    "@types/screeps": "^2.2.1"
+  },
+  "dependencies": {}
 }
