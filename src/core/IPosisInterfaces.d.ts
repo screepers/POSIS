@@ -1,7 +1,5 @@
-type PosisPID = string | number;
-
-interface PosisInterfaces {
-    baseKernel: IPosisKernel;
+declare interface IPosisInterfaces {
+    baseKernel?: IPosisKernel;
     spawn?: IPosisSpawnExtension;
     sleep?: IPosisSleepExtension;
     coop?: IPosisCooperativeScheduling;

@@ -5,13 +5,13 @@ export default function shimCooperativeScheduling(coop?: IPosisCooperativeSchedu
             budget: Game.cpu.limit - now,
             get used() {
                 return Game.cpu.getUsed() - now;
-            },
-        }
+            }
+        };
     }
     if (!coop.wrap) {
-        coop.wrap = function(makeIterator) {
+        coop.wrap = (makeIterator) => {
             const iterator = makeIterator();
-            let result = undefined;
+            let result;
             while (coop.used < coop.budget) {
                 if (result && result.done) {
                     break;
@@ -21,7 +21,7 @@ export default function shimCooperativeScheduling(coop?: IPosisCooperativeSchedu
             if (result && typeof result.value === 'function') {
                 return result.value();
             }
-        }
+        };
     }
     return coop;
 }
