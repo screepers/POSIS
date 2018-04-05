@@ -5,16 +5,16 @@ version: 2
 #
 
 # Minimum number of voters
-quorum: 5
+quorum: 1
 
 # Required percentage of "yes" votes (ignoring abstentions)
 threshold: 0.74
 
 # Number of hours after last action (commit or opening the pull request) before issue can be merged
-mergedelay: 6
+mergedelay: 24
 
 # Number of votes at which the mergedelay gets ignored, assuming no negative votes.
-delayoverride: 5
+delayoverride: 3
 
 # Number of hours after last action (commit or opening the pull request) before issue is autoclosed
 timeout: 168
