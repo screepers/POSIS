@@ -9,5 +9,5 @@ declare interface IPosisProcessContext {
     readonly parentId: PosisPID;
     /** Logger */
     readonly log: IPosisLogger;
-    queryPosisInterface<T extends keyof IPosisInterfaces>(interfaceId: T): IPosisInterfaces[T] | undefined;
+    queryPosisInterface<T extends keyof IPosisInterfaces>(interfaceId: T): IPosisInterfaces[T];
 }
